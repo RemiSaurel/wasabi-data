@@ -5,28 +5,6 @@ import urllib.parse
 
 API_URL = "https://wasabi.i3s.unice.fr"
 
-ARTISTS = [
-    "Linkin Park",
-    "Eminem",
-    "Metallica",
-    "The Beatles",
-    "The Rolling Stones",
-    "Queen",
-    "Nirvana",
-    "Guns N' Roses",
-    "Red Hot Chili Peppers",
-    "Pink Floyd",
-    "Green Day",
-    "Led Zeppelin",
-    "Foo Fighters",
-    "The Who",
-    "U2",
-    "The Doors",
-    "Radiohead",
-    "Jay-Z",
-    "Coldplay",
-]
-
 
 def fetch_artist(artist_name):
     """Fetch artist data from the API."""
@@ -42,34 +20,75 @@ def fetch_artist(artist_name):
         return None
 
 
-def get_albums(filename):
-    """Get all albums from an artist json file."""
-    with open(filename, "r") as f:
-        artist_data = eval(f.read())
+def get_field(artist_data, field):
+    if artist_data is None:
+        return []
 
-    print("Found " + str(len(artist_data["albums"])) + " albums for " + artist_data["name"])
-    # Print artist name | album title
-    for album in artist_data["albums"]:
-        print(artist_data["name"] + " | " + album["title"])
-    return artist_data["albums"]
+    if field not in artist_data:
+        print("No " + field + " found for " + artist_data["name"])
+        return []
+
+    print("Found " + str(len(artist_data[field])) + " " + field + " for " + artist_data["name"])
+    return artist_data[field]
 
 
 if __name__ == "__main__":
-    # Write artist json data into a json file for each artist
     albums = []
-    for artist in ARTISTS:
-        # Check if artist data has already been fetched
-        if Path("data/" + artist + ".json").is_file():
-            print("Data for " + artist + " already fetched")
-            continue
+    genres_by_artist = {}
+    locations_by_artist = {}
+    with open("artists.txt", "r") as f:
+        ARTISTS = f.read().splitlines()
 
-        print("Fetching data for " + artist)
-        artist_data = fetch_artist(artist)
-        with open("data/" + artist + ".json", "w") as f:
-            f.write(str(artist_data))
+    import time
+
+    # Dictionary to keep track of fetched artist data
+    fetched_artists = {}
+
+    # Write artist json data into a json file for each artist
+    for artist in ARTISTS:
+        artist_json_path = Path("data") / f"{artist}.json"
+
+        # Check if artist data has already been fetched
+        if artist_json_path.is_file():
+            if artist in fetched_artists:
+                # Use the cached artist data
+                artist_data = fetched_artists[artist]
+            else:
+                # Check if the file contains "None", if yes, fetch the data again
+                with open(artist_json_path, "r") as f:
+                    artist_data = eval(f.read())
+                    if artist_data is None:
+                        time.sleep(3)
+                        print("Fetching data for " + artist)
+                        artist_data = fetch_artist(artist)
+                        with open(artist_json_path, "w") as f:
+                            f.write(str(artist_data))
+                    else:
+                        print("Using cached data for " + artist)
+                        fetched_artists[artist] = artist_data
+        else:
+            time.sleep(3)
+            print("Fetching data for " + artist)
+            artist_data = fetch_artist(artist)
+            with open(artist_json_path, "w") as f:
+                f.write(str(artist_data))
 
     # Get all albums from all artists
     for artist in ARTISTS:
-        albums.extend(get_albums("data/" + artist + ".json"))
+        with open("data/" + artist + ".json", "r") as f:
+            artist_data = eval(f.read())
+            if artist_data is None:
+                continue
+            albums.extend(get_field(artist_data, "albums"))
+            genres_by_artist[artist] = get_field(artist_data, "genres")
+            locations_by_artist[artist] = get_field(artist_data, "location")
+
+    for (artist, genres) in genres_by_artist.items():
+        # Print genres for each artist
+        print(artist + " : " + str(genres))
+
+    for (artist, locations) in locations_by_artist.items():
+        # Print locations for each artist
+        print(artist + " : " + str(locations))
 
     print("Found " + str(len(albums)) + " albums in total")
