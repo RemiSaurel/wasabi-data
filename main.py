@@ -1,3 +1,5 @@
+import time
+
 from pathlib import Path
 
 import requests as requests
@@ -38,8 +40,6 @@ if __name__ == "__main__":
     locations_by_artist = {}
     with open("artists.txt", "r") as f:
         ARTISTS = f.read().splitlines()
-
-    import time
 
     # Dictionary to keep track of fetched artist data
     fetched_artists = {}
