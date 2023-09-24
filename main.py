@@ -34,13 +34,7 @@ def get_field(artist_data, field):
     return artist_data[field]
 
 
-if __name__ == "__main__":
-    albums = []
-    genres_by_artist = {}
-    locations_by_artist = {}
-    with open("artists.txt", "r") as f:
-        ARTISTS = f.read().splitlines()
-
+def request_artists():
     # Dictionary to keep track of fetched artist data
     fetched_artists = {}
 
@@ -50,10 +44,7 @@ if __name__ == "__main__":
 
         # Check if artist data has already been fetched
         if artist_json_path.is_file():
-            if artist in fetched_artists:
-                # Use the cached artist data
-                artist_data = fetched_artists[artist]
-            else:
+            if artist not in fetched_artists:
                 # Check if the file contains "None", if yes, fetch the data again
                 with open(artist_json_path, "r") as f:
                     artist_data = eval(f.read())
@@ -73,6 +64,21 @@ if __name__ == "__main__":
             with open(artist_json_path, "w") as f:
                 f.write(str(artist_data))
 
+
+if __name__ == "__main__":
+    albums = []
+    genres_by_artist = {}
+    location_by_artist = {}
+
+    all_countries = set()
+    all_genres = set()
+
+    with open("artists.txt", "r") as f:
+        ARTISTS = f.read().splitlines()
+
+    # TURN ON TO GET NEW ARTISTS OR RELOAD SOME
+    # request_artists()
+
     # Get all albums from all artists
     for artist in ARTISTS:
         with open("data/" + artist + ".json", "r") as f:
@@ -81,14 +87,22 @@ if __name__ == "__main__":
                 continue
             albums.extend(get_field(artist_data, "albums"))
             genres_by_artist[artist] = get_field(artist_data, "genres")
-            locations_by_artist[artist] = get_field(artist_data, "location")
+            location_by_artist[artist] = get_field(artist_data, "location")
 
     for (artist, genres) in genres_by_artist.items():
-        # Print genres for each artist
+        for genre in genres:
+            all_genres.add(genre)
         print(artist + " : " + str(genres))
 
-    for (artist, locations) in locations_by_artist.items():
-        # Print locations for each artist
-        print(artist + " : " + str(locations))
+    for (artist, location) in location_by_artist.items():
+        if location is None:
+            continue
+        country = location["country"]
+        all_countries.add(country)
+        print(artist + " : " + str(country))
 
     print("Found " + str(len(albums)) + " albums in total")
+    print("Found " + str(len(all_genres)) + " genres in total")
+    print("Found genres such as " + str(all_genres))
+    print("Found " + str(len(all_countries)) + " countries in total")
+    print("Found locations such as " + str(all_countries))
