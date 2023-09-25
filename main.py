@@ -5,9 +5,12 @@ from pathlib import Path
 import requests as requests
 import urllib.parse
 
+# IMPORT YOUR FILE HERE
+from remi import *
+
 API_URL = "https://wasabi.i3s.unice.fr"
 
-
+# FETCH ARTIST DATA FROM THE API
 def fetch_artist(artist_name):
     """Fetch artist data from the API."""
     # Encode the artist name to avoid errors, e.g. "AC/DC" -> "AC%2FDC"
@@ -22,6 +25,7 @@ def fetch_artist(artist_name):
         return None
 
 
+# GET A FIELD FROM AN ARTIST DATA
 def get_field(artist_data, field):
     if artist_data is None:
         return []
@@ -64,62 +68,43 @@ def request_artists():
                 f.write(str(artist_data))
 
 
-def generate_genres_analysis(genres_by_artist):
-    unique_genres = set()
-    with open("analysis/genres.json", "a", encoding="utf-8") as f:
-        f.truncate(0)
-        f.write("[\n")
-        for (artist, genres) in genres_by_artist.items():
-            for genre in genres:
-                unique_genres.add(genre)
-            f.write('{"artist": "' + artist + '", "genres": ' + str(genres) + "},\n")
-        f.write("]\n")
-    return unique_genres
-
-
-def generate_countries_analysis(location_by_artist):
-    unique_countries = set()
-    with open("analysis/countries.json", "a", encoding="utf-8") as f:
-        f.truncate(0)
-        f.write("[\n")
-        for (artist, location) in location_by_artist.items():
-            if location is None:
-                continue
-            country = location["country"]
-            unique_countries.add(country)
-            f.write('{"artist": "' + artist + '", "country": "' + country + '"},\n')
-        f.write("]\n")
-    return unique_countries
-
-
 if __name__ == "__main__":
-    albums = []
-    genres_by_artist = {}
-    location_by_artist = {}
 
-    unique_countries = set()
-    unique_genres = set()
-
+    # LOAD ARTISTS FROM FILE
     with open("artists.txt", "r", encoding="utf-8") as f:
         ARTISTS = f.read().splitlines()
 
+    # WARNING :
     # TURN ON TO GET NEW ARTISTS OR RELOAD SOME
-    request_artists()
+    # request_artists()
 
-    # Get all albums from all artists
+    # GLOBAL ALBUMS TO USE
+    albums = []
+
+    # REMI VARIABLES
+    unique_countries = set()
+    unique_genres = set()
+    genres_by_artist = {}
+    location_by_artist = {}
+
+    # READ DATA FROM FILES
     for artist in ARTISTS:
         with open("data/" + artist + ".json", "r", encoding="utf-8") as f:
             artist_data = eval(f.read())
             if artist_data is None:
                 continue
+            # PUT YOUR TREATMENT HERE TO AVOID MULTIPLE LOOPS / OPENING FILES
             albums.extend(get_field(artist_data, "albums"))
             genres_by_artist[artist] = get_field(artist_data, "genres")
             location_by_artist[artist] = get_field(artist_data, "location")
 
+    # PRINT GLOBAL STATS
+    print("Found " + str(len(albums)) + " albums in total")
+
+    # REMI EXAMPLE
     unique_genres = generate_genres_analysis(genres_by_artist)
     unique_countries = generate_countries_analysis(location_by_artist)
 
-    print("Found " + str(len(albums)) + " albums in total")
     print("Found " + str(len(unique_genres)) + " unique genres in total")
     print("Found genres such as " + str(unique_genres))
     print("Found " + str(len(unique_countries)) + " unique countries in total")
