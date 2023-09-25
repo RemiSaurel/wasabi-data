@@ -1,4 +1,6 @@
-from functions import get_data_from_file, get_field
+import requests
+
+from functions import get_data_from_file, get_field, API_URL
 
 
 def generate_genres_analysis(genres_by_artist):
@@ -28,6 +30,11 @@ def generate_countries_analysis(location_by_artist):
         f.write("]\n")
     return unique_countries
 
+def get_artist_number_by_country(nb_countries):
+    response = requests.get(API_URL + "/api/v1/artist/country/popularity?limit=" + str(nb_countries))
+    with open("analysis/nb_artists_by_countries.json", "w", encoding="utf-8") as f:
+        f.truncate(0)
+        f.write(str(response.json()))
 
 def main_analysis(artist_list):
     # REMI VARIABLES
@@ -47,6 +54,7 @@ def main_analysis(artist_list):
     # REMI EXAMPLE
     unique_genres = generate_genres_analysis(genres_by_artist)
     unique_countries = generate_countries_analysis(location_by_artist)
+    get_artist_number_by_country(100)
 
     print("Found " + str(len(unique_genres)) + " unique genres in total")
     print("Found genres such as " + str(unique_genres))
