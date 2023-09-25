@@ -17,6 +17,4 @@ if __name__ == "__main__":
     # REMI ANALYSIS
     main_analysis(ARTISTS)
 
-    # CHAIMAE ANALYSIS
-    main_analysis2(ARTISTS)
     # PUT YOUR ANALYSIS HERE
