@@ -1,6 +1,4 @@
-from pathlib import Path
-
-from main import get_data_from_file, get_field
+from functions import get_data_from_file, get_field
 
 
 def generate_genres_analysis(genres_by_artist):
@@ -40,7 +38,7 @@ def main_analysis(artist_list):
 
     # READ DATA FROM FILES
     for artist in artist_list:
-        artist_data = get_data_from_file(Path("data") / f"{artist}.json")
+        artist_data = get_data_from_file("data/" + artist + ".json")
 
         # REMI EXAMPLE
         genres_by_artist[artist] = get_field(artist_data, "genres")
