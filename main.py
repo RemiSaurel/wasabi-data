@@ -65,13 +65,41 @@ def request_artists():
                 f.write(str(artist_data))
 
 
+def generate_genres_analysis(genres_by_artist):
+    unique_genres = set()
+    with open("analysis/genres.json", "a") as f:
+        f.truncate(0)
+        f.write("[\n")
+        for (artist, genres) in genres_by_artist.items():
+            for genre in genres:
+                unique_genres.add(genre)
+            f.write('{"artist": "' + artist + '", "genres": ' + str(genres) + "},\n")
+        f.write("]\n")
+    return unique_genres
+
+
+def generate_countries_analysis(location_by_artist):
+    unique_countries = set()
+    with open("analysis/countries.json", "a") as f:
+        f.truncate(0)
+        f.write("[\n")
+        for (artist, location) in location_by_artist.items():
+            if location is None:
+                continue
+            country = location["country"]
+            unique_countries.add(country)
+            f.write('{"artist": "' + artist + '", "country": "' + country + '"},\n')
+        f.write("]\n")
+    return unique_countries
+
+
 if __name__ == "__main__":
     albums = []
     genres_by_artist = {}
     location_by_artist = {}
 
-    all_countries = set()
-    all_genres = set()
+    unique_countries = set()
+    unique_genres = set()
 
     with open("artists.txt", "r") as f:
         ARTISTS = f.read().splitlines()
@@ -89,20 +117,11 @@ if __name__ == "__main__":
             genres_by_artist[artist] = get_field(artist_data, "genres")
             location_by_artist[artist] = get_field(artist_data, "location")
 
-    for (artist, genres) in genres_by_artist.items():
-        for genre in genres:
-            all_genres.add(genre)
-        print(artist + " : " + str(genres))
-
-    for (artist, location) in location_by_artist.items():
-        if location is None:
-            continue
-        country = location["country"]
-        all_countries.add(country)
-        print(artist + " : " + str(country))
+    unique_genres = generate_genres_analysis(genres_by_artist)
+    unique_countries = generate_countries_analysis(location_by_artist)
 
     print("Found " + str(len(albums)) + " albums in total")
-    print("Found " + str(len(all_genres)) + " genres in total")
-    print("Found genres such as " + str(all_genres))
-    print("Found " + str(len(all_countries)) + " countries in total")
-    print("Found locations such as " + str(all_countries))
+    print("Found " + str(len(unique_genres)) + " unique genres in total")
+    print("Found genres such as " + str(unique_genres))
+    print("Found " + str(len(unique_countries)) + " unique countries in total")
+    print("Found locations such as " + str(unique_countries))
