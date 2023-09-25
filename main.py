@@ -46,14 +46,13 @@ def request_artists():
         if artist_json_path.is_file():
             if artist not in fetched_artists:
                 # Check if the file contains "None", if yes, fetch the data again
-                with open(artist_json_path, "r") as f:
+                with open(artist_json_path, "r", encoding="utf-8") as f:
                     artist_data = eval(f.read())
                     if artist_data is None:
                         time.sleep(3)
                         print("Fetching data for " + artist)
                         artist_data = fetch_artist(artist)
-                        with open(artist_json_path, "w") as f:
-                            f.write(str(artist_data))
+                        f.write(str(artist_data))
                     else:
                         print("Using cached data for " + artist)
                         fetched_artists[artist] = artist_data
@@ -61,13 +60,13 @@ def request_artists():
             time.sleep(3)
             print("Fetching data for " + artist)
             artist_data = fetch_artist(artist)
-            with open(artist_json_path, "w") as f:
+            with open(artist_json_path, "w", encoding="utf-8") as f:
                 f.write(str(artist_data))
 
 
 def generate_genres_analysis(genres_by_artist):
     unique_genres = set()
-    with open("analysis/genres.json", "a") as f:
+    with open("analysis/genres.json", "a", encoding="utf-8") as f:
         f.truncate(0)
         f.write("[\n")
         for (artist, genres) in genres_by_artist.items():
@@ -80,7 +79,7 @@ def generate_genres_analysis(genres_by_artist):
 
 def generate_countries_analysis(location_by_artist):
     unique_countries = set()
-    with open("analysis/countries.json", "a") as f:
+    with open("analysis/countries.json", "a", encoding="utf-8") as f:
         f.truncate(0)
         f.write("[\n")
         for (artist, location) in location_by_artist.items():
@@ -101,15 +100,15 @@ if __name__ == "__main__":
     unique_countries = set()
     unique_genres = set()
 
-    with open("artists.txt", "r") as f:
+    with open("artists.txt", "r", encoding="utf-8") as f:
         ARTISTS = f.read().splitlines()
 
     # TURN ON TO GET NEW ARTISTS OR RELOAD SOME
-    # request_artists()
+    request_artists()
 
     # Get all albums from all artists
     for artist in ARTISTS:
-        with open("data/" + artist + ".json", "r") as f:
+        with open("data/" + artist + ".json", "r", encoding="utf-8") as f:
             artist_data = eval(f.read())
             if artist_data is None:
                 continue
