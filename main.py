@@ -1,7 +1,5 @@
 import time
 
-from pathlib import Path
-
 import requests as requests
 import urllib.parse
 
@@ -9,6 +7,7 @@ import urllib.parse
 from remi import *
 
 API_URL = "https://wasabi.i3s.unice.fr"
+
 
 # FETCH ARTIST DATA FROM THE API
 def fetch_artist(artist_name):
@@ -68,7 +67,18 @@ def request_artists():
                 f.write(str(artist_data))
 
 
+def get_data_from_file(file):
+    with open(file, "r", encoding="utf-8") as f:
+        artist_data = eval(f.read())
+        if artist_data is not None:
+            return artist_data
+        else:
+            return None
+
+
 if __name__ == "__main__":
+    # LIST OF ARTISTS
+    ARTISTS = []
 
     # LOAD ARTISTS FROM FILE
     with open("artists.txt", "r", encoding="utf-8") as f:
@@ -78,34 +88,7 @@ if __name__ == "__main__":
     # TURN ON TO GET NEW ARTISTS OR RELOAD SOME
     # request_artists()
 
-    # GLOBAL ALBUMS TO USE
-    albums = []
+    # REMI ANALYSIS
+    main_analysis(ARTISTS)
 
-    # REMI VARIABLES
-    unique_countries = set()
-    unique_genres = set()
-    genres_by_artist = {}
-    location_by_artist = {}
-
-    # READ DATA FROM FILES
-    for artist in ARTISTS:
-        with open("data/" + artist + ".json", "r", encoding="utf-8") as f:
-            artist_data = eval(f.read())
-            if artist_data is None:
-                continue
-            # PUT YOUR TREATMENT HERE TO AVOID MULTIPLE LOOPS / OPENING FILES
-            albums.extend(get_field(artist_data, "albums"))
-            genres_by_artist[artist] = get_field(artist_data, "genres")
-            location_by_artist[artist] = get_field(artist_data, "location")
-
-    # PRINT GLOBAL STATS
-    print("Found " + str(len(albums)) + " albums in total")
-
-    # REMI EXAMPLE
-    unique_genres = generate_genres_analysis(genres_by_artist)
-    unique_countries = generate_countries_analysis(location_by_artist)
-
-    print("Found " + str(len(unique_genres)) + " unique genres in total")
-    print("Found genres such as " + str(unique_genres))
-    print("Found " + str(len(unique_countries)) + " unique countries in total")
-    print("Found locations such as " + str(unique_countries))
+    # PUT YOUR ANALYSIS HERE
