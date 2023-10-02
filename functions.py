@@ -21,6 +21,7 @@ def fetch_artist(artist_name):
 
 # GET A FIELD FROM AN ARTIST DATA
 def get_field(artist_data, field):
+    print("Getting " + field + " from " + artist_data["name"])
     if artist_data is None:
         return []
 
@@ -28,7 +29,6 @@ def get_field(artist_data, field):
         print("No " + field + " found for " + artist_data["name"])
         return []
 
-    print("Found " + str(len(artist_data[field])) + " " + field + " for " + artist_data["name"])
     return artist_data[field]
 
 
