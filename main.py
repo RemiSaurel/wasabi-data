@@ -1,6 +1,7 @@
 # IMPORT YOUR FILE HERE
 from functions import request_artists
 from remi import *
+from chaimae import *
 
 if __name__ == "__main__":
     # LIST OF ARTISTS
@@ -15,6 +16,7 @@ if __name__ == "__main__":
     # request_artists(ARTISTS)
 
     # REMI ANALYSIS
-    main_analysis(ARTISTS)
-
+    #main_analysis(ARTISTS)
+    # CHAIMAE ANALYSIS
+    main_data(ARTISTS)
     # PUT YOUR ANALYSIS HERE
