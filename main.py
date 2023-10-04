@@ -1,7 +1,7 @@
 # IMPORT YOUR FILE HERE
 from functions import request_artists
 from remi import *
-
+from mathieu import *
 if __name__ == "__main__":
     # LIST OF ARTISTS
     ARTISTS = []
@@ -15,6 +15,8 @@ if __name__ == "__main__":
     # request_artists(ARTISTS)
 
     # REMI ANALYSIS
-    main_analysis(ARTISTS)
+    #main_analysis(ARTISTS)
 
     # PUT YOUR ANALYSIS HERE
+    # Mathieu Analyse
+    analysis(ARTISTS)
