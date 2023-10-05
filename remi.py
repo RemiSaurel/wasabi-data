@@ -1,6 +1,105 @@
+import json
+import time
+
 import requests
 
 from functions import get_data_from_file, get_field, API_URL
+
+artist_info = {}  # Use a dictionary with country names as keys
+
+
+def clean_data():
+    output_data = {}
+
+    with open("analysis/full_countries.json", "r", encoding="utf-8") as f:
+        input_data = eval(f.read())
+        for country, artists_list in input_data.items():
+            for artist in artists_list:
+                artist_entry = {
+                    "artist": artist["artist"],
+                    "genres": artist["genres"],
+                    "nbAlbums": artist["nbAlbums"],
+                    "nbSongs": artist["nbSongs"],
+                    "deezerFans": artist["deezerFans"]
+                }
+                if country not in output_data:
+                    output_data[country] = []
+                output_data[country].append(artist_entry)
+
+    with open("analysis/full_countries_clean.json", "w", encoding="utf-8") as f:
+        f.truncate(0)
+        f.write("[\n")
+        for country, artists_list in output_data.items():
+            f.write('{"country": "' + country + '", "artists": ' + json.dumps(artists_list) + "},\n")
+        f.write("]\n")
+
+
+def retrieve_artists():
+    start = 0
+    step = 200
+    global artist_info  # Use the global artist_info variable
+    while start < 75000:
+        print("Fetching artists from " + str(start) + " to " + str(start + step))
+        new_data = fetch_artists_names(start)
+        if new_data:
+            merge_data(artist_info, new_data)  # Merge the new data with existing data
+        start += step
+        # Wait 1 second to avoid being blocked by the API
+        # time.sleep(1)
+    # Write into full_countries.json
+    with open("analysis/full_countries.json", "w", encoding="utf-8") as f:
+        f.truncate(0)
+        f.write(str(artist_info))
+
+
+def fetch_artists_names(START):
+    country_artists = {}
+
+    response = requests.get(API_URL + "/api/v1/artist_all/" + str(START))
+    if response.status_code == 200:
+        res = response.json()
+
+        for artist in res:
+            nb_albums = len(artist["albums"])
+            nb_songs = 0
+            country = artist["location"]["country"]
+            genres = artist["genres"]
+            # Check if artist has a deezerFans field
+            if "deezerFans" in artist:
+                nbDeezerFans = artist["deezerFans"]
+            else:
+                nbDeezerFans = 0
+
+            for album in artist["albums"]:
+                nb_songs += len(album["songs"])
+
+            artist_entry = {
+                "artist": artist["name"],
+                "genres": genres,
+                "nbAlbums": nb_albums,
+                "nbSongs": nb_songs,
+                "deezerFans": nbDeezerFans
+            }
+
+            if country not in country_artists:
+                country_artists[country] = []
+
+            country_artists[country].append(artist_entry)
+
+        return country_artists
+    elif response.status_code == 429:
+        print("Too many requests, waiting 10 seconds...")
+        time.sleep(10)
+        return fetch_artists_names(START)
+
+
+def merge_data(existing_data, new_data):
+    # Merge new_data into existing_data based on country names
+    for country, artists in new_data.items():
+        if country in existing_data:
+            existing_data[country].extend(artists)
+        else:
+            existing_data[country] = artists
 
 
 def generate_genres_analysis(genres_by_artist):
