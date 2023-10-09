@@ -3,7 +3,9 @@ import urllib
 from pathlib import Path
 
 import requests
+
 API_URL = "https://wasabi.i3s.unice.fr"
+
 
 def fetch_artist(artist_name):
     """Fetch artist data from the API."""
@@ -19,8 +21,8 @@ def fetch_artist(artist_name):
         return None
 
 
-# GET A FIELD FROM AN ARTIST DATA
 def get_field(artist_data, field):
+    """Get a field from an artist data dictionary."""
     print("Getting " + field + " from " + artist_data["name"])
     if artist_data is None:
         return []
@@ -63,6 +65,7 @@ def request_artists(ARTISTS):
 
 
 def get_data_from_file(file):
+    """Get data from a file."""
     with open(file, "r", encoding="utf-8") as f:
         artist_data = eval(f.read())
         if artist_data is not None:

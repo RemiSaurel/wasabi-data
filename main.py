@@ -10,12 +10,15 @@ if __name__ == "__main__":
     # LOAD ARTISTS FROM FILE
     with open("artists.txt", "r", encoding="utf-8") as f:
         ARTISTS = f.read().splitlines()
+
     # WARNING :
     # TURN ON TO GET NEW ARTISTS OR RELOAD SOME
     # request_artists(ARTISTS)
 
     # REMI ANALYSIS
     # main_analysis(ARTISTS)
+    # retrieve_artists()
+    # clean_data()
 
     # ADAM ANALYSIS
     artist_popularity_by_genre(ARTISTS)
