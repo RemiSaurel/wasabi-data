@@ -17,6 +17,10 @@ if __name__ == "__main__":
 
     # REMI ANALYSIS
     #main_analysis(ARTISTS)
+    # retrieve_artists()
+    # clean_data()
+    
     # CHAIMAE ANALYSIS
     main_data(ARTISTS)
+
     # PUT YOUR ANALYSIS HERE
