@@ -15,7 +15,9 @@ if __name__ == "__main__":
     # request_artists(ARTISTS)
 
     # REMI ANALYSIS
-    #main_analysis(ARTISTS)
+    # main_analysis(ARTISTS)
+    # retrieve_artists()
+    # clean_data()
 
     # PUT YOUR ANALYSIS HERE
     # Mathieu Analyse
