@@ -1,6 +1,5 @@
 from functions import get_data_from_file, get_field
 
-
 def generate_artists_analysis(artists_info, deezerfans, carrier):
     artist_album_popularity_creation = set()
     with open("analysis/artist_albums_creationGroupe.json", "a", encoding="utf-8") as f:
@@ -32,6 +31,15 @@ def analysis(artist_list):
         artist_popularity[artist] = get_field(artist_data, "deezerFans")
         #Artist GET carrier start
         artist_carrier[artist] = get_field(artist_data, "lifeSpan")
+        #modify the fields to have it on the good way
+        for (lifeSpan) in artist_carrier.items():
+            lifeSpan[1]['begin'] =  lifeSpan[1]['begin'][:4]
+            if lifeSpan[1]['ended'] == False:
+                lifeSpan[1]['ended'] = 'false'
+            if lifeSpan[1]['ended'] == True:
+                lifeSpan[1]['ended'] = 'true'
+            if not lifeSpan[1]['end'] == '':
+                lifeSpan[1]['end'] = lifeSpan[1]['end'][:4]
     #  # ARTIST EXAMPLE GET titles from albums
     unique_artist = generate_artists_analysis(artist_info, artist_popularity, artist_carrier)
 
