@@ -28,7 +28,7 @@ def get_field(artist_data, field):
         print("No " + field + " found for " + artist_data["name"])
         return []
 
-    print("Found " + str(len(artist_data[field])) + " " + field + " for " + artist_data["name"])
+    #print("Found " + str(len(artist_data[field])) + " " + field + " for " + artist_data["name"])
     return artist_data[field]
 
 
