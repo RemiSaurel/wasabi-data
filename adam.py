@@ -3,6 +3,23 @@ import time
 
 from functions import API_URL
 
+# TODO test the method when the api will be operational
+def fetch_all_artists():
+    """Fetch all artists from the API and write them to a json file."""
+    start = 0
+    all_data = {"artists" : [], "genres" : []}
+    while start < 75000:
+        print("Fetching artists from " + str(start) + " to " + str(start + 200))
+        data = fetch_artists(start)
+
+        for genre in data['genres']:
+            if genre not in all_data['genres']:
+                all_data['genres'].append(genre)
+        all_data['artists'] += data['artists']
+
+        start += 200
+    write_json_genres(all_data['artists'], all_data['genres'])
+
 
 def fetch_artists(START=0):
     """Fetch artists from the API and return a dictionary with country names as keys
@@ -53,7 +70,7 @@ def artist_popularity_by_genre(data):
         for genre in artist_genres:
             if genre not in genres:
                 genres.append(genre)
-    write_json_genres(artists, genres)
+    return {"artists": artists, "genres": genres}
 
 
 def write_json_genres(artists, genres):
