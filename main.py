@@ -2,6 +2,7 @@
 from functions import request_artists
 from remi import *
 from adam import *
+import time
 
 if __name__ == "__main__":
     # LIST OF ARTISTS
@@ -21,6 +22,10 @@ if __name__ == "__main__":
     # clean_data()
 
     # ADAM ANALYSIS
-    artist_popularity_by_genre(ARTISTS)
+    # artist_popularity_by_genre(ARTISTS)
+    time_start = time.time()
+    fetch_all_artists()
+    time_end = time.time()
+    print("Time elapsed : " + str(time_end - time_start) + " seconds")
 
     # PUT YOUR ANALYSIS HERE
