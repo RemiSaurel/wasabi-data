@@ -27,7 +27,7 @@ def get_life_span(lifespan_by_artist):
 def generate_artists_infos(artist_list, albums_by_artist, deezer_fans):
     artist_infos = {}
     avg_likes_by_artist = {}
-    with open("analysis/artists_infos.json", "a", encoding="utf-8") as f:
+    with open("analysis/ch-artists_infos.json", "a", encoding="utf-8") as f:
         f.truncate(0)
         f.write("[\n")
         for artist in artist_list:
