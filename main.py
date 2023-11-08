@@ -2,6 +2,7 @@
 from functions import request_artists
 from remi import *
 from mathieu import *
+
 if __name__ == "__main__":
     # LIST OF ARTISTS
     ARTISTS = []
@@ -21,4 +22,5 @@ if __name__ == "__main__":
 
     # PUT YOUR ANALYSIS HERE
     # Mathieu Analyse
-    analysis(ARTISTS)
+    # analysis(ARTISTS)
+    retrieve_artists("artist_mathieu",nb_artists=10000)
