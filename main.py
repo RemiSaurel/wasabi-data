@@ -1,6 +1,8 @@
 # IMPORT YOUR FILE HERE
 from functions import request_artists
 from remi import *
+from adam import *
+import time
 from chaimae import *
 
 if __name__ == "__main__":
@@ -22,5 +24,12 @@ if __name__ == "__main__":
     
     # CHAIMAE ANALYSIS
     main_data(ARTISTS)
+
+    # ADAM ANALYSIS
+    # artist_popularity_by_genre(ARTISTS)
+    time_start = time.time()
+    fetch_all_artists()
+    time_end = time.time()
+    print("Time elapsed : " + str(time_end - time_start) + " seconds")
 
     # PUT YOUR ANALYSIS HERE
