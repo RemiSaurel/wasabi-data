@@ -1,6 +1,7 @@
 # IMPORT YOUR FILE HERE
 from functions import request_artists
 from remi import *
+from mathieu import *
 from adam import *
 import time
 from chaimae import *
@@ -33,3 +34,6 @@ if __name__ == "__main__":
     print("Time elapsed : " + str(time_end - time_start) + " seconds")
 
     # PUT YOUR ANALYSIS HERE
+    # Mathieu Analyse
+    # analysis(ARTISTS)
+    retrieve_artists("artist_mathieu",nb_artists=10000)
